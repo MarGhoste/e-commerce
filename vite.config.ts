@@ -7,7 +7,7 @@ import { defineConfig } from 'vite';
 export default defineConfig({
     plugins: [
         laravel({
-            input: ['resources/js/app.ts'],
+            input: ['resources/css/app.css','resources/js/app.ts','resources/js/admin.js'],
             ssr: 'resources/js/ssr.ts',
             refresh: true,
         }),
@@ -24,4 +24,10 @@ export default defineConfig({
             },
         }),
     ],
+
+    resolve: {
+        alias: {
+            'vue': 'vue/dist/vue.esm-bundler.js' // Alias para cargar el compilador completo
+        }
+    }
 });
