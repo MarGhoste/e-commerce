@@ -11,6 +11,12 @@ class Product extends Model
 
     protected $fillable = ['category_id', 'name', 'slug', 'description', 'price', 'stock', 'is_active'];
 
+    protected $casts = [
+        'price' => 'float',
+        'stock' => 'integer',
+        'is_active' => 'boolean',
+    ];
+
     public function category()
     {
         // Un producto pertenece a una categoría

@@ -120,10 +120,11 @@
         "skipLibCheck": true /* Skip type checking all .d.ts files. */
     },
     "include": [
+        "resources/views/**/*.blade.php",
         "resources/js/**/*.ts",
+        "resources/js/**/*.js",
         "resources/js/**/*.d.ts",
         "resources/js/**/*.tsx",
-        "resources/js/**/*.vue",
         "resources/js/**/*.vue",
         "resources/js/components/**/*.vue"
     ]

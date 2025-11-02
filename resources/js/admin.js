@@ -2,6 +2,7 @@
 
 import '../css/app.css';
 import { createApp } from 'vue';
+import { createPinia } from 'pinia';
 import AdminLayout from './components/admin/AdminLayout.vue';
 import ProductManager from './components/admin/ProductManager.vue';
 import OrderManager from './components/admin/OrderManager.vue';
@@ -10,6 +11,9 @@ import CategoryManager from './components/admin/CategoryManager.vue';
 
 // 1. Inicializar la aplicación Vue
 const app = createApp({});
+
+const pinia = createPinia();
+app.use(pinia);
 
 // 2. Registrar componentes (para que puedan usarse en Blade)
 app.component('AdminLayout', AdminLayout);
