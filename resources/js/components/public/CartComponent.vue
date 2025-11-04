@@ -58,7 +58,7 @@
 
 <script setup>
 import { onMounted } from 'vue';
-import { useCartStore } from '../stores/cart';
+import { useCartStore } from '../../stores/cart';
 
 // ✅ Inicializar el store
 const cartStore = useCartStore();

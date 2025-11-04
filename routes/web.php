@@ -1,6 +1,8 @@
 <?php
 
+//use routes;
 use Inertia\Inertia;
+use Laravel\Fortify\Fortify;
 use Laravel\Fortify\Features;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CartController;
@@ -9,18 +11,31 @@ use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\PublicCatalogController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ProductImageController;
+use Laravel\Fortify\Http\Controllers\AuthenticatedSessionController;
+
 
 //Route::get('/', function () {
-//return Inertia::render('Welcome', [
-//'canRegister' => Features::enabled(Features::registration()),
-//]);
+//    return Inertia::render('Welcome', [
+//        'canRegister' => Features::enabled(Features::registration()),
+//    ]);
 //})->name('home');
 
 Route::get('dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+Route::get('/login', [AuthenticatedSessionController::class, 'create'])
+    ->middleware(['guest'])
+    ->name('login');
 
+Route::post('/login', [AuthenticatedSessionController::class, 'store'])
+    ->middleware(['guest']);
+
+Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
+    ->name('logout');
+
+
+//Laravel\Fortify\Fortify::routes();
 
 
 
@@ -56,6 +71,17 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'is_admin']], functi
 
 Route::get('/', [PublicCatalogController::class, 'showCatalogPage'])->name('catalog');
 Route::get('/products/{slug}', [PublicCatalogController::class, 'showProductDetail'])->name('product.detail');
-Route::get('/cart', [PublicCatalogController::class, 'showCartPage'])->name('cart.view');
+//Route::get('/cart', [PublicCatalogController::class, 'showCartPage'])->name('cart.view');
+
+Route::get('/checkout/cart', [PublicCatalogController::class, 'showCartPage'])->name('cart.view');
+
+
+// API routes for the cart, moved here to use web middleware (sessions)
+Route::prefix('api/cart')->group(function () {
+    Route::get('/', [CartController::class, 'index']);
+    Route::post('/', [CartController::class, 'store']);
+    Route::patch('/{cartItem}', [CartController::class, 'update']);
+    Route::delete('/{cartItem}', [CartController::class, 'destroy']);
+});
 
 require __DIR__ . '/settings.php';

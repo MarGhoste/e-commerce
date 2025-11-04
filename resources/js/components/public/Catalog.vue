@@ -53,8 +53,9 @@
                             
                             <div class="mt-4 flex justify-between items-center">
                                 <button 
-                                    @click="cartStore.addProductToCart(product.id, 1)"
-                                    class="flex items-center justify-center bg-green-500 text-white py-2 px-3 text-sm rounded-lg hover:bg-green-600 transition"
+                                    @click="addToCart(product.id)"
+                                    :disabled="isAdding"
+                                    class="flex items-center justify-center bg-green-500 text-white py-2 px-3 text-sm rounded-lg hover:bg-green-600 transition disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                     Añadir 🛒
                                 </button>
@@ -84,7 +85,7 @@
 </template>
 
 <script setup>
-import { onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useCartStore } from '../../stores/cart';
 import { useCatalogStore } from '../../stores/catalog'; // Importar el store del catálogo
 
@@ -92,11 +93,19 @@ import { useCatalogStore } from '../../stores/catalog'; // Importar el store del
 const catalogStore = useCatalogStore(); // Contiene productos, categorías y loading
 const cartStore = useCartStore();
 
+const isAdding = ref(false);
+
 /**
  * Añade el producto al carrito usando la acción de Pinia.
  */
-const addToCart = (productId) => {
-    cartStore.addProductToCart(productId, 1);
+const addToCart = async (productId) => {
+    if (isAdding.value) return; // Evitar clics múltiples
+    isAdding.value = true;
+    try {
+        await cartStore.addProductToCart(productId, 1);
+    } finally {
+        isAdding.value = false;
+    }
 };
 
 

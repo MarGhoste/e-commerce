@@ -9,6 +9,7 @@ export const useCartStore = defineStore('cart', {
         items: [],          // Array de CartItem objects
         subtotal: 0,        // Subtotal calculado por Laravel
         isLoading: false,   // Para control de UI
+        isAddingToCart: false, // Para prevenir múltiples llamadas concurrentes a addProductToCart
         isInitialized: false, // Para saber si ya se cargó el carrito inicial
     }),
 
@@ -52,7 +53,10 @@ export const useCartStore = defineStore('cart', {
          * @param {number} quantity 
          */
         async addProductToCart(productId, quantity = 1) {
+            if (this.isAddingToCart) return; // Evitar llamadas múltiples si ya hay una en curso
+
             this.isLoading = true;
+            this.isAddingToCart = true; // Marcar que se está añadiendo al carrito
             try {
                 const response = await axios.post('/api/cart', {
                     product_id: productId,
@@ -70,12 +74,17 @@ export const useCartStore = defineStore('cart', {
                 }
 
                 this.subtotal = response.data.cart_subtotal;
+                this.isInitialized = true;
                 // Opcional: Mostrar notificación de éxito
+                
+                // Forzar una re-carga del carrito para asegurar la sincronización de la UI
+                await this.fetchCart();
                 
             } catch (error) {
                 console.error('Error al añadir producto:', error);
             } finally {
                 this.isLoading = false;
+                this.isAddingToCart = false; // Restablecer el flag
             }
         },
 

@@ -13,7 +13,11 @@
                 </div>
                 
                 <div class="flex items-center space-x-4">
-                    <a href="/login" class="text-gray-600 hover:text-blue-600">👤 Iniciar Sesión</a>
+                    <div v-if="user" class="flex items-center space-x-4">
+                        <span>{{ user.name }}</span>
+                        <Link :href="logout.url()" method="post" as="button" type="button" class="text-gray-600 hover:text-blue-600">Logout</Link>
+                    </div>
+                    <a v-else href="/login" class="text-gray-600 hover:text-blue-600">👤 Iniciar Sesión</a>
                     
                     <CartIcon />
                 </div>
@@ -33,9 +37,13 @@
 </template>
 
 <script setup lang="ts">
-// ✅ LÍNEA CORREGIDA: Usa './' para referenciar un archivo en el mismo directorio
-import CartIcon from './CartIcon.vue'; 
-// Importamos el componente de Icono del Carrito
+import { computed } from 'vue';
+import { Link, usePage } from '@inertiajs/vue3';
+import CartIcon from './CartIcon.vue';
+import { logout } from '@/routes';
+
+const page = usePage();
+const user = computed(() => page.props.auth.user);
 </script>
 
 <style scoped>

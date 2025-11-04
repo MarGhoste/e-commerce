@@ -17,6 +17,10 @@ class CartItem extends Model
         'price', // Guardamos el precio para consistencia, incluso si el producto cambia
     ];
 
+    protected $casts = [
+        'price' => 'float',
+    ];
+
     /**
      * Un artículo de carrito pertenece a un carrito.
      */

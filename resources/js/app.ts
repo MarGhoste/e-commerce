@@ -38,13 +38,3 @@ createInertiaApp({
     },
 });
 
-// This will set light / dark mode on page load...
-initializeTheme();
-
-// ❌ Eliminamos: 
-// import MainLayout from './components/public/MainLayout.vue'; 
-// const app = createApp({});
-// app.use(pinia);
-// import Catalog from './components/public/Catalog.vue';
-// app.component('Catalog', Catalog); 
-// app.mount('#app');

@@ -43,12 +43,30 @@ class CartController extends Controller
     public function index()
     {
         $cart = $this->getCurrentCart();
+        $cart->load('items.product'); // Eager load relationships
 
-        // Carga los artículos y sus detalles de producto
-        $cart->load('items.product');
+        // Manually transform the items to create a safe and explicit data structure
+        $items = $cart->items->map(function ($item) {
+            // The product might be null if it was deleted, handle this case
+            $productData = $item->product ? [
+                'id' => $item->product->id,
+                'name' => $item->product->name,
+                'slug' => $item->product->slug,
+            ] : null;
 
-        // Retorna el carrito con sus artículos
-        return response()->json($cart);
+            return [
+                'id' => $item->id,
+                'quantity' => $item->quantity,
+                'price' => $item->price,
+                'product' => $productData,
+            ];
+        });
+
+        // Return the transformed data
+        return response()->json([
+            'items' => $items,
+            'subtotal' => $cart->subtotal,
+        ]);
     }
 
     /**
