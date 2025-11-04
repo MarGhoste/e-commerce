@@ -44,14 +44,16 @@
                 </tbody>
             </table>
 
-            <div class="mt-6 flex justify-end">
-                <div class="text-right">
-                    <p class="text-xl font-bold">Subtotal: ${{ cartStore.subtotal.toFixed(2) }}</p>
-                    <button class="mt-4 bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600">
-                        Proceder al Pago
-                    </button>
-                </div>
-            </div>
+           <div class="mt-6 flex justify-end">
+    <div class="text-right">
+        <p class="text-xl font-bold">Subtotal: ${{ cartStore.subtotal.toFixed(2) }}</p>
+        
+        <button @click="proceedToCheckout" 
+                class="mt-4 bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600">
+            Proceder al Pago
+        </button>
+    </div>
+</div>
         </div>
     </div>
 </template>
@@ -59,9 +61,12 @@
 <script setup>
 import { onMounted } from 'vue';
 import { useCartStore } from '../../stores/cart';
+import { router } from '@inertiajs/vue3';
+import { route } from 'ziggy-js';
 
 // ✅ Inicializar el store
 const cartStore = useCartStore();
+
 
 // Función para manejar el cambio de cantidad
 const updateQuantity = (item, quantity) => {
@@ -72,6 +77,14 @@ const updateQuantity = (item, quantity) => {
         cartStore.updateCartItemQuantity(item, newQuantity);
     }
 };
+
+// Función para navegar a la vista de Checkout
+const proceedToCheckout = () => {
+    // Usamos la ruta nombrada que definimos antes: Route::get('/checkout', ...)
+    router.visit(route('checkout.view')); 
+};
+
+
 
 // Cargar el carrito al montar el componente
 onMounted(() => {

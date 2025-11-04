@@ -2,10 +2,13 @@
 
 //use routes;
 use Inertia\Inertia;
+use App\Models\Order;
 use Laravel\Fortify\Fortify;
 use Laravel\Fortify\Features;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\PublicCatalogController;
@@ -19,6 +22,10 @@ use Laravel\Fortify\Http\Controllers\AuthenticatedSessionController;
 //        'canRegister' => Features::enabled(Features::registration()),
 //    ]);
 //})->name('home');
+Route::post(
+    'stripe/webhook',
+    [\Laravel\Cashier\Http\Controllers\WebhookController::class, 'handleWebhook']
+)->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]);
 
 Route::get('dashboard', function () {
     return Inertia::render('Dashboard');
@@ -83,5 +90,24 @@ Route::prefix('api/cart')->group(function () {
     Route::patch('/{cartItem}', [CartController::class, 'update']);
     Route::delete('/{cartItem}', [CartController::class, 'destroy']);
 });
+
+Route::get('/checkout', [CheckoutController::class, 'index'])->middleware(['auth'])->name('checkout.view');
+
+Route::post('/checkout/process', [CheckoutController::class, 'process'])->middleware(['auth'])->name('checkout.process');
+
+Route::get('/order/{order}', function (Order $order) {
+    // Asegura que la orden pertenezca al usuario actual (o admin)
+    if (Auth::id() !== $order->user_id) {
+        // Redirigir si la orden no pertenece al usuario.
+        return redirect('/')->with('error', 'Acceso denegado a esta orden.');
+    }
+
+    // Comparte la orden con el componente Vue
+    return Inertia::render('Checkout/OrderConfirmation', [
+        'order' => $order->load('items.product'), // Carga los detalles para mostrar
+    ]);
+})->middleware(['auth'])->name('order.confirmation');
+
+
 
 require __DIR__ . '/settings.php';
