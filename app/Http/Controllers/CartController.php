@@ -52,6 +52,7 @@ class CartController extends Controller
                 'id' => $item->product->id,
                 'name' => $item->product->name,
                 'slug' => $item->product->slug,
+                'image_url' => $item->product->image_url, // <-- AÑADIR ESTA LÍNEA para la iamagen
             ] : null;
 
             return [
@@ -160,6 +161,4 @@ class CartController extends Controller
 
         return response()->json(['message' => 'Artículo eliminado del carrito.'], 200);
     }
-
-    // Nota: Deberíamos agregar una función 'update' para cambiar solo la cantidad.
 }

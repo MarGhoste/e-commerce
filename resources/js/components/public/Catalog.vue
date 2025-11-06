@@ -1,98 +1,89 @@
 <template>
     <div>
         <PromoCarousel />
-        <div class="container mx-auto p-4 md:p-8">
-            <h2 class="text-2xl font-semibold mb-6 text-gray-800">Catálogo de Productos 🚀</h2>
-            
-            <div class="flex flex-col md:flex-row gap-8">
+        
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <h2 class="text-4xl font-extrabold text-center mb-10 tracking-tight">😊Nuestros Productos😊</h2>
+
+            <!-- Products Grid (now full width) -->
+            <main>
+                <div v-if="catalogStore.loading" class="flex justify-center items-center py-20">
+                    <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-cyan-500"></div>
+                </div>
                 
-                <aside class="md:w-1/4 bg-white p-4 rounded-lg shadow-lg h-full sticky top-4">
-                    <h3 class="text-xl font-bold mb-4 border-b pb-2">Filtros</h3>
+                <div v-else-if="catalogStore.products.length === 0" class="text-center py-20 bg-gray-800 rounded-xl">
+                    <p class="text-2xl font-bold text-gray-400">Sin Resultados</p>
+                    <p class="text-gray-500 mt-2">No se encontraron productos para los filtros seleccionados.</p>
+                </div>
 
-                    <div class="mb-6">
-                        <h4 class="font-semibold mb-2 text-gray-700">Categorías</h4>
-                        <ul>
-                            <li class="cursor-pointer py-1 hover:text-blue-600"
-                                :class="{'font-bold text-blue-600': !catalogStore.categoryId}"
-                                @click="catalogStore.setCategoryFilter(null)">
-                                Todas ({{ catalogStore.pagination.total }})
-                            </li>
+                <div v-else class="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 gap-8">
+                    <div v-for="product in catalogStore.products" :key="product.id"
+                         class="bg-gray-800 rounded-xl shadow-lg overflow-hidden border border-gray-700 group transform hover:-translate-y-2 transition-transform duration-300">
+                        
+                        <a :href="`/products/${product.slug}`" class="block h-56 overflow-hidden">
+                            <img :src="product.image_url || '/images/placeholder.png'" 
+                                 :alt="product.name" 
+                                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 ease-in-out"
+                                 loading="lazy">
+                        </a>
+                        
+                        <div class="p-5">
+                            <p class="text-sm text-cyan-400 mb-1">{{ product.category ? product.category.name : 'Varios' }}</p>
+                            <h3 class="text-xl font-bold h-16 overflow-hidden group-hover:text-cyan-300 transition-colors duration-300">
+                                <a :href="`/products/${product.slug}`">{{ product.name }}</a>
+                            </h3>
                             
-                            <li v-for="category in catalogStore.categories" :key="category.id"
-                                class="cursor-pointer py-1 hover:text-blue-600"
-                                :class="{'font-bold text-blue-600': catalogStore.categoryId === category.id}"
-                                @click="catalogStore.setCategoryFilter(category.id)">
-                                {{ category.name }}
-                            </li>
-                        </ul>
-                    </div>
-                    
-                    <h4 class="font-semibold mb-2 text-gray-700 pt-4 border-t">Rango de Precios</h4>
-                </aside>
-
-                <main class="md:w-3/4">
-                    <div v-if="catalogStore.loading" class="text-center py-10">Cargando productos...</div>
-                    
-                    <div v-else-if="catalogStore.products.length === 0" class="text-center py-10 text-gray-500">
-                        No se encontraron productos para los filtros seleccionados.
-                    </div>
-
-                    <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                        <div v-for="product in catalogStore.products" :key="product.id"
-                             class="bg-white rounded-lg shadow-lg overflow-hidden border hover:shadow-xl transition duration-300">
-                            
-                            <div class="h-40 bg-gray-200 flex items-center justify-center text-gray-500">
-                                [Imagen de Producto]
+                            <div class="mt-4 flex justify-between items-baseline">
+                                <p class="text-3xl font-black tracking-tighter text-white">${{ product.price.toFixed(2) }}</p>
+                                <a :href="`/products/${product.slug}`" class="text-gray-400 hover:text-white text-sm">Ver más</a>
                             </div>
-
-                            <div class="p-4">
-                                <h3 class="text-lg font-semibold h-12 overflow-hidden hover:text-blue-600 cursor-pointer">
-                                    <a :href="`/products/${product.slug}`">{{ product.name }}</a>
-                                </h3>
-                                <p class="text-sm text-gray-500 mb-2">{{ product.category ? product.category.name : 'Varios' }}</p>
-                                
-                                <p class="text-2xl font-bold text-red-600 mt-2">${{ product.price.toFixed(2) }}</p>
-                                
-                                <div class="mt-4 flex justify-between items-center">
-                                    <button 
-                                        @click="addToCart(product.id)"
-                                        :disabled="isAdding"
-                                        class="flex items-center justify-center bg-green-500 text-white py-2 px-3 text-sm rounded-lg hover:bg-green-600 transition disabled:opacity-50 disabled:cursor-not-allowed"
-                                    >
-                                        Añadir 🛒
-                                    </button>
-                                    <a :href="`/products/${product.slug}`" class="text-blue-600 hover:underline text-sm">Ver Detalle</a>
-                                </div>
+                            
+                            <div class="mt-6">
+                                <button 
+                                    @click="addToCart(product.id)"
+                                    :disabled="isAdding"
+                                    class="w-full flex items-center justify-center bg-cyan-500 text-gray-900 py-3 px-4 font-bold rounded-lg hover:bg-cyan-400 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor"><path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.922.778h9.446a1 1 0 00.922-.778L16.78 3H17a1 1 0 000-2H3zM6.143 6l.895 3.582A1 1 0 008 11h6a1 1 0 00.962-.741L16.857 6H6.143zM5 12a2 2 0 100 4 2 2 0 000-4zm10 0a2 2 0 100 4 2 2 0 000-4z" /></svg>
+                                    Añadir al Carrito
+                                </button>
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    <div class="mt-8 flex justify-center space-x-4" v-if="catalogStore.products.length > 0">
-                        <button 
-                            @click="catalogStore.fetchProducts(catalogStore.pagination.current_page - 1)" 
-                            :disabled="catalogStore.pagination.current_page === 1"
-                            class="px-4 py-2 border rounded disabled:opacity-50"
-                        >Anterior</button>
-                        <span class="py-2">Página {{ catalogStore.pagination.current_page }} de {{ catalogStore.pagination.last_page }}</span>
-                        <button 
-                            @click="catalogStore.fetchProducts(catalogStore.pagination.current_page + 1)" 
-                            :disabled="catalogStore.pagination.current_page === catalogStore.pagination.last_page"
-                            class="px-4 py-2 border rounded disabled:opacity-50"
-                        >Siguiente</button>
-                    </div>
+                <!-- Pagination -->
+                <div class="mt-12 flex justify-center space-x-3" v-if="catalogStore.products.length > 0">
+                    <button 
+                        @click="catalogStore.fetchProducts(catalogStore.pagination.current_page - 1)" 
+                        :disabled="catalogStore.pagination.current_page === 1"
+                        class="px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >Anterior</button>
+                    <span class="py-2 px-4 bg-gray-700 rounded-lg">Página {{ catalogStore.pagination.current_page }} de {{ catalogStore.pagination.last_page }}</span>
+                    <button 
+                        @click="catalogStore.fetchProducts(catalogStore.pagination.current_page + 1)" 
+                        :disabled="catalogStore.pagination.current_page === catalogStore.pagination.last_page"
+                        class="px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >Siguiente</button>
+                </div>
 
                 </main>
             </div>
         </div>
-    </div>
+        
+        <LocationInfo />
+
+        <BenefitsBar />
+    
 </template>
 
 <script setup>
 import { onMounted, ref } from 'vue';
 import { useCartStore } from '../../stores/cart';
 import { useCatalogStore } from '../../stores/catalog';
-import PromoCarousel from '@/components/PromoCarousel.vue'; // Importar el store del catálogo
-
+import PromoCarousel from '@/components/PromoCarousel.vue';
+import LocationInfo from '@/components/public/LocationInfo.vue';
+import BenefitsBar from '@/components/BenefitsBar.vue';
 // 1. Inicialización de Stores
 const catalogStore = useCatalogStore(); // Contiene productos, categorías y loading
 const cartStore = useCartStore();

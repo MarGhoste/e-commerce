@@ -1,53 +1,58 @@
 <template>
   <div>
-    <h2>Gestión de Categorías 📚</h2>
+    <h2 class="text-2xl font-bold mb-4">Gestión de Categorías 📚</h2>
 
-    <div class="input-group mb-3">
-        <input 
-            type="text" 
-            class="form-control" 
-            placeholder="Nombre de la nueva categoría" 
-            v-model="newCategoryName"
-        >
-        <div class="input-group-append">
-            <button class="btn btn-primary" @click="createCategory" :disabled="!newCategoryName">
-                Crear Categoría
+    <div class="mb-4 max-w-lg">
+        <label for="new-category" class="sr-only">Nombre de la nueva categoría</label>
+        <div class="flex rounded-md shadow-sm">
+            <input 
+                type="text" 
+                id="new-category"
+                class="flex-1 block w-full px-3 py-2 border border-gray-300 rounded-l-md focus:ring-indigo-500 focus:border-indigo-500"
+                placeholder="Nombre de la nueva categoría" 
+                v-model="newCategoryName"
+                @keyup.enter="createCategory"
+            >
+            <button class="px-4 py-2 bg-blue-500 text-white rounded-r-md hover:bg-blue-600 disabled:opacity-50" @click="createCategory" :disabled="!newCategoryName">
+                Crear
             </button>
         </div>
     </div>
     
-    <div v-if="error" class="alert-danger">{{ error }}</div>
+    <div v-if="error" class="my-4 p-3 bg-red-100 text-red-700 border border-red-400 rounded">{{ error }}</div>
     
-    <table class="table mt-4">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Nombre</th>
-          <th>Slug</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="category in categories" :key="category.id">
-          <td>{{ category.id }}</td>
-          <td>
-            <span v-if="editingId !== category.id">{{ category.name }}</span>
-            <input v-else type="text" v-model="editingName" @keyup.enter="updateCategory(category)">
-          </td>
-          <td>{{ category.slug }}</td>
-          <td>
-            <div v-if="editingId === category.id">
-                <button @click="updateCategory(category)" class="btn btn-sm btn-success">Guardar</button>
-                <button @click="cancelEdit" class="btn btn-sm btn-secondary">Cancelar</button>
-            </div>
-            <div v-else>
-                <button @click="editCategory(category)" class="btn btn-sm btn-info">Editar</button>
-                <button @click="deleteCategory(category.id)" class="btn btn-sm btn-danger">Eliminar</button>
-            </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="overflow-x-auto">
+        <table class="min-w-full bg-white">
+            <thead class="bg-gray-200">
+                <tr>
+                    <th class="py-2 px-4 border-b">ID</th>
+                    <th class="py-2 px-4 border-b">Nombre</th>
+                    <th class="py-2 px-4 border-b">Slug</th>
+                    <th class="py-2 px-4 border-b">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="category in categories" :key="category.id" class="hover:bg-gray-50">
+                    <td class="py-2 px-4 border-b text-center">{{ category.id }}</td>
+                    <td class="py-2 px-4 border-b">
+                        <span v-if="editingId !== category.id">{{ category.name }}</span>
+                        <input v-else type="text" v-model="editingName" @keyup.enter="updateCategory(category)" class="w-full px-2 py-1 border rounded">
+                    </td>
+                    <td class="py-2 px-4 border-b">{{ category.slug }}</td>
+                    <td class="py-2 px-4 border-b text-center">
+                        <div v-if="editingId === category.id" class="space-x-2">
+                            <button @click="updateCategory(category)" class="px-2 py-1 bg-green-500 text-white rounded text-sm hover:bg-green-600">Guardar</button>
+                            <button @click="cancelEdit" class="px-2 py-1 bg-gray-500 text-white rounded text-sm hover:bg-gray-600">Cancelar</button>
+                        </div>
+                        <div v-else class="space-x-2">
+                            <button @click="editCategory(category)" class="px-2 py-1 bg-yellow-500 text-white rounded text-sm hover:bg-yellow-600">Editar</button>
+                            <button @click="deleteCategory(category.id)" class="px-2 py-1 bg-red-500 text-white rounded text-sm hover:bg-red-600">Eliminar</button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
   </div>
 </template>
 
@@ -58,10 +63,10 @@ export default {
     data() {
         return {
             categories: [],
-            newCategoryName: '', // Campo para la nueva categoría
-            editingId: null,      // ID de la categoría que se está editando
-            editingName: '',    // Nombre temporal durante la edición
-            error: null,        // Mensaje de error para el usuario
+            newCategoryName: '',
+            editingId: null,
+            editingName: '',
+            error: null,
         };
     },
     mounted() {
@@ -71,7 +76,6 @@ export default {
         async fetchCategories() {
             this.error = null;
             try {
-                // Llama al Admin\CategoryController@index
                 const response = await axios.get('/admin/categories');
                 this.categories = response.data;
             } catch (err) {
@@ -80,19 +84,13 @@ export default {
             }
         },
 
-        // --- CREAR ---
         async createCategory() {
             this.error = null;
             try {
-                // Llama al Admin\CategoryController@store
                 const response = await axios.post('/admin/categories', { name: this.newCategoryName });
-                
-                // Añade la nueva categoría al array
                 this.categories.push(response.data);
-                this.newCategoryName = ''; // Limpia el campo
-
+                this.newCategoryName = '';
             } catch (err) {
-                // Manejar errores de validación 422
                 if (err.response && err.response.status === 422) {
                     this.error = err.response.data.errors.name[0];
                 } else {
@@ -102,7 +100,6 @@ export default {
             }
         },
 
-        // --- EDITAR (Preparación) ---
         editCategory(category) {
             this.editingId = category.id;
             this.editingName = category.name;
@@ -113,7 +110,6 @@ export default {
             this.editingName = '';
         },
 
-        // --- EDITAR (Guardar) ---
         async updateCategory(category) {
             this.error = null;
             if (this.editingName === category.name) {
@@ -122,15 +118,10 @@ export default {
             }
 
             try {
-                // Llama al Admin\CategoryController@update
                 const response = await axios.put(`/admin/categories/${category.id}`, { name: this.editingName });
-                
-                // Actualiza el objeto en el array para que Vue lo refresque
                 category.name = response.data.name;
-                category.slug = response.data.slug; // El slug también se actualiza en el backend
-                
+                category.slug = response.data.slug;
                 this.cancelEdit();
-
             } catch (err) {
                 if (err.response && err.response.status === 422) {
                     this.error = err.response.data.errors.name[0];
@@ -141,7 +132,6 @@ export default {
             }
         },
 
-        // --- ELIMINAR ---
         async deleteCategory(categoryId) {
             this.error = null;
             if (!confirm('¿Estás seguro de que quieres eliminar esta categoría? Esto fallará si tiene productos asociados.')) {
@@ -149,12 +139,8 @@ export default {
             }
 
             try {
-                // Llama al Admin\CategoryController@destroy
                 await axios.delete(`/admin/categories/${categoryId}`);
-                
-                // Eliminar la categoría del array de Vue para refrescar la tabla
                 this.categories = this.categories.filter(c => c.id !== categoryId);
-
             } catch (err) {
                 if (err.response && err.response.status === 409) {
                     this.error = "ERROR: No se puede eliminar. Existen productos asociados a esta categoría.";
@@ -166,14 +152,4 @@ export default {
         }
     }
 }
-
 </script>
-
-<style scoped>
-.input-group { max-width: 500px; margin: 0 auto; }
-.alert-danger { padding: 10px; background: #fdd; color: #a00; border: 1px solid #a00; margin-top: 15px; text-align: center; }
-.table { width: 100%; border-collapse: collapse; }
-.table th, .table td { border: 1px solid #ccc; padding: 8px; }
-.table td input { width: 100%; box-sizing: border-box; }
-.btn-secondary { margin-left: 5px; }
-</style>

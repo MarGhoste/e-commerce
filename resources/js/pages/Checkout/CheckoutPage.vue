@@ -1,39 +1,37 @@
 <template>
-    <AppLayout>
-        <form @submit.prevent="submit" class="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
+   
+        <form @submit.prevent="submit" class="bg-gray-900 text-white max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-12">
             
-            <div class="md:col-span-2 bg-white p-6 shadow rounded-lg">
-                <h2 class="text-xl font-semibold mb-4">Información de Envío</h2>
+            <div class="lg:col-span-2 bg-gray-800 p-6 rounded-lg shadow-md">
+                <h2 class="text-xl font-semibold mb-4 text-white">Información de Envío</h2>
                 
                 <div class="mb-4">
-                    <label for="address" class="block text-sm font-medium text-gray-700">Dirección</label>
-                    <input type="text" id="address" v-model="form.address" required
-                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                    <label for="address" class="block text-sm font-medium text-gray-300">Dirección</label>
+                    <input type="text" id="address" v-model="form.address" required class="mt-1 block w-full rounded-md border-gray-700 bg-gray-700 text-white shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2">
                 </div>
 
                 <div class="grid grid-cols-2 gap-4 mb-8">
                     <div class="mb-4">
-                        <label for="city" class="block text-sm font-medium text-gray-700">Ciudad</label>
-                        <input type="text" id="city" v-model="form.city" required
-                               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        <label for="city" class="block text-sm font-medium text-gray-300">Ciudad</label>
+                        <input type="text" id="city" v-model="form.city" required class="mt-1 block w-full rounded-md border-gray-700 bg-gray-700 text-white shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2">
                     </div>
                     
                     <div class="mb-4">
-                        <label for="zip" class="block text-sm font-medium text-gray-700">Código Postal</label>
+                        <label for="zip" class="block text-sm font-medium text-gray-300">Código Postal</label>
                         <input type="text" id="zip" v-model="form.zip" required
-                               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                               class="mt-1 block w-full rounded-md border-gray-700 bg-gray-700 text-white shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2">
                     </div>
                 </div>
                 
-                <h2 class="text-xl font-semibold mb-4">Detalles de Pago</h2>
+                <h2 class="text-xl font-semibold mb-4 text-white">Detalles de Pago</h2>
                 
-                <div id="card-element" class="border border-gray-300 p-3 rounded-md">
+                <div id="card-element" class="border border-gray-700 p-3 rounded-md bg-gray-700">
                     </div>
 
                 <p v-if="paymentError" class="mt-4 text-red-600 font-medium">{{ paymentError }}</p>
             </div>
 
-            <div class="md:col-span-1 bg-gray-50 p-6 shadow rounded-lg flex flex-col justify-between">
+            <div class="lg:col-span-1 bg-gray-800 p-6 rounded-lg shadow-md flex flex-col justify-between">
                 <div>
                     <h3 class="text-lg font-semibold mb-4">Resumen del Pedido</h3>
                     
@@ -42,25 +40,25 @@
                         <span>${{ (item.price * item.quantity).toFixed(2) }}</span>
                     </div>
 
-                    <hr class="my-3">
+                    <hr class="my-3 border-gray-700">
                     
                     <div class="flex justify-between text-base font-semibold">
                         <span>Subtotal:</span>
                         <span>${{ totalAmount.toFixed(2) }}</span>
                     </div>
 
-                    <hr class="my-3 border-t-2 border-gray-300">
+                    <hr class="my-3 border-t-2 border-gray-700">
 
-                    <p class="text-xl font-bold text-blue-600">Total a pagar: ${{ totalAmount.toFixed(2) }}</p> 
+                    <p class="text-xl font-bold text-cyan-400">Total a pagar: ${{ totalAmount.toFixed(2) }}</p> 
                 </div>
                 
                 <button type="submit" :disabled="form.processing"
-                        class="mt-6 w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50">
+                        class="mt-6 w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-cyan-600 hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 disabled:opacity-50">
                     Pagar Ahora
                 </button>
             </div>
         </form>
-    </AppLayout>
+    
 </template>
 
 <script setup>

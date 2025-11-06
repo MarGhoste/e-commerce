@@ -2,7 +2,7 @@
   <div>
     <h2>Gestión de Productos 🛒</h2>
     
-    <button @click="openCreateForm" class="btn btn-primary">
+    <button @click="openCreateForm" class="my-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
         + Añadir Nuevo Producto
     </button>
     
@@ -13,52 +13,52 @@
         @close="showForm = false"
     />
 
-    <div v-else> <table class="table mt-4">
-            <thead>
+    <div v-else> <table class="min-w-full bg-white">
+            <thead class="bg-gray-200">
                 <tr>
-                    <th>ID</th>
-                    <th>Nombre</th>
-                    <th>Categoría</th>
-                    <th>Precio</th>
-                    <th>Stock</th>
-                    <th>Activo</th>
-                    <th>Acciones</th>
+                    <th class="py-2 px-4 border-b">ID</th>
+                    <th class="py-2 px-4 border-b">Nombre</th>
+                    <th class="py-2 px-4 border-b">Categoría</th>
+                    <th class="py-2 px-4 border-b">Precio</th>
+                    <th class="py-2 px-4 border-b">Stock</th>
+                    <th class="py-2 px-4 border-b">Activo</th>
+                    <th class="py-2 px-4 border-b">Acciones</th>
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="product in products" :key="product.id">
-                    <td>{{ product.id }}</td>
-                    <td>{{ product.name }}</td>
-                    <td>{{ product.category ? product.category.name : 'N/A' }}</td>
-                    <td>${{ product.price }}</td>
-                    <td>{{ product.stock }}</td>
-                    <td>
-                        <span :class="{'text-success': product.is_active, 'text-danger': !product.is_active}">
+                <tr v-for="product in products" :key="product.id" class="hover:bg-gray-50">
+                    <td class="py-2 px-4 border-b text-center">{{ product.id }}</td>
+                    <td class="py-2 px-4 border-b">{{ product.name }}</td>
+                    <td class="py-2 px-4 border-b">{{ product.category ? product.category.name : 'N/A' }}</td>
+                    <td class="py-2 px-4 border-b text-right">${{ product.price }}</td>
+                    <td class="py-2 px-4 border-b text-center">{{ product.stock }}</td>
+                    <td class="py-2 px-4 border-b text-center">
+                        <span :class="{'text-green-600': product.is_active, 'text-red-600': !product.is_active}">
                             {{ product.is_active ? 'Sí' : 'No' }}
                         </span>
                     </td>
-                    <td>
-                        <button @click="editProduct(product)" class="btn btn-sm btn-info">Editar</button>
-                        <button @click="deleteProduct(product.id)" class="btn btn-sm btn-danger">Eliminar</button>
+                    <td class="py-2 px-4 border-b text-center">
+                        <button @click="editProduct(product)" class="px-2 py-1 bg-yellow-500 text-white rounded text-sm hover:bg-yellow-600">Editar</button>
+                        <button @click="deleteProduct(product.id)" class="ml-2 px-2 py-1 bg-red-500 text-white rounded text-sm hover:bg-red-600">Eliminar</button>
                     </td>
                 </tr>
                 <tr v-if="products.length === 0">
-                    <td colspan="7" class="text-center">No hay productos en el catálogo.</td>
+                    <td colspan="7" class="text-center py-4">No hay productos en el catálogo.</td>
                 </tr>
             </tbody>
         </table>
 
-        <div class="pagination-controls">
+        <div class="mt-4 flex justify-between items-center">
             <button 
                 @click="fetchProducts(pagination.current_page - 1)" 
                 :disabled="!pagination.prev_page_url"
-                class="btn btn-sm btn-secondary"
+                class="px-4 py-2 bg-gray-300 rounded disabled:opacity-50"
             >Anterior</button>
             <span>Página {{ pagination.current_page }} de {{ pagination.last_page }}</span>
             <button 
                 @click="fetchProducts(pagination.current_page + 1)" 
                 :disabled="!pagination.next_page_url"
-                class="btn btn-sm btn-secondary"
+                class="px-4 py-2 bg-gray-300 rounded disabled:opacity-50"
             >Siguiente</button>
         </div>
     </div> </div>
@@ -134,11 +134,3 @@ export default {
     }
 }
 </script>
-
-<style scoped>
-/* Estilos muy básicos para la tabla */
-.admin-wrapper { padding: 20px; }
-.table th, .table td { border: 1px solid #ccc; padding: 8px; }
-.text-success { color: green; font-weight: bold; }
-.text-danger { color: red; }
-</style>

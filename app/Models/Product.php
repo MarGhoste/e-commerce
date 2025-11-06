@@ -3,7 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\Storage;
 
 class Product extends Model
 {
@@ -16,6 +18,9 @@ class Product extends Model
         'stock' => 'integer',
         'is_active' => 'boolean',
     ];
+
+    protected $appends = ['image_url'];
+
 
     public function category()
     {
@@ -33,5 +38,23 @@ class Product extends Model
     {
         // Un producto aparece en muchos ítems de órdenes
         return $this->hasMany(OrderItem::class);
+    }
+    public function mainImage(): HasOne
+    {
+        return $this->hasOne(ProductImage::class)->where('is_main', true);
+    }
+
+    // --- ACCESSOR/GETTER (NUEVO) ---
+
+    /**
+     * Crea un atributo virtual llamado 'image_url' que Vue puede consumir.
+     * Acceso: $product->image_url
+     */
+    public function getImageUrlAttribute(): ?string
+    {
+        if ($this->mainImage) {
+            return Storage::url($this->mainImage->url);
+        }
+        return null;
     }
 }

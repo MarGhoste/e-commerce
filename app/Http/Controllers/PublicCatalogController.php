@@ -13,7 +13,7 @@ class PublicCatalogController extends Controller
     {
         // Lógica de filtrado (búsqueda, categoría, precio, etc.)
         $query = Product::where('is_active', true)
-            ->with('category') // Cargar la relación de categoría
+            ->with(['category', 'mainImage']) // Cargar la relación de categoría
             ->orderBy('created_at', 'desc');
 
         // Filtrar por categoría (ejemplo simple)
@@ -22,7 +22,7 @@ class PublicCatalogController extends Controller
         }
 
         // Paginación de los productos
-        $products = $query->paginate(12); // 12 productos por página
+        $products = $query->paginate(8); // aqui yo defino la cantidad de productos por página
 
         // Obtener categorías para el sidebar (solo las que tienen productos activos)
         $categories = Category::has('products')->get(['id', 'name']);
@@ -37,7 +37,7 @@ class PublicCatalogController extends Controller
     {
         // Lógica de filtrado (búsqueda, categoría, precio, etc.)
         $query = Product::where('is_active', true)
-            ->with('category') // Cargar la relación de categoría
+            ->with(['category', 'mainImage']) // Cargar la relación de categoría
             ->orderBy('created_at', 'desc');
 
         // Filtrar por categoría (ejemplo simple)
@@ -63,7 +63,7 @@ class PublicCatalogController extends Controller
      */
     public function showProductDetail(string $slug)
     {
-        $product = Product::with('category')
+        $product = Product::with(['category', 'images'])
             ->where('slug', $slug)
             ->where('is_active', true)
             ->firstOrFail();

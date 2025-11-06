@@ -1,5 +1,5 @@
 <template>
-    <AppLayout>
+    
         <div class="max-w-3xl mx-auto p-8 bg-white shadow-lg rounded-xl mt-10 text-center">
             
             <svg class="w-20 h-20 text-green-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
@@ -28,11 +28,11 @@
                 <a href="/" class="text-blue-600 hover:text-blue-800 font-medium">Volver al Catálogo</a>
             </div>
         </div>
-    </AppLayout>
+   
 </template>
 
 <script setup>
-import AppLayout from '../../layouts/AppLayout.vue';
+//import AppLayout from '../../layouts/AppLayout.vue';
 
 // 💡 Define la prop que Inertia pasará
 const props = defineProps({

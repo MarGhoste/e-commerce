@@ -18,7 +18,7 @@
                 <div class="flex items-center space-x-6">
                     <span>
                         <i class="fas fa-map-marker-alt mr-1"></i>
-                        Pasaje, Los Alamos Ventanilla 123 - Lima
+                        Pasaje, Los Alamos Ventanilla 123 - Callao
                     </span>
                     <span>Métodos de pago Yape - Plin</span>
                 </div>
@@ -53,6 +53,7 @@
                 
             </div>
         </div>
+        <!--
         <div class="bg-red-700 shadow-lg hidden lg:block">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <nav class="flex justify-center items-center h-10 space-x-6 text-sm font-semibold">
@@ -104,19 +105,50 @@
                 </nav>
             </div>
         </div>
+        -->
+        <!-- New Horizontal Filter Bar from Catalog -->
+        <div class="bg-red-700 p-4 shadow-md">
+            <div class="container mx-auto flex flex-wrap justify-center items-center gap-x-6 gap-y-2">
+                <Link href="/" class="cursor-pointer py-2 px-4 rounded-lg transition duration-300 text-sm font-semibold text-white hover:bg-red-600">
+                    Inicio
+                </Link>
+                <span 
+                    class="cursor-pointer py-2 px-4 rounded-lg transition duration-300 text-sm font-semibold"
+                    :class="!catalogStore.categoryId ? 'bg-white text-red-700' : 'text-white hover:bg-red-600'"
+                    @click="catalogStore.setCategoryFilter(null)">
+                    Todas
+                </span>
+                <span v-for="category in catalogStore.categories" :key="category.id"
+                    class="cursor-pointer py-2 px-4 rounded-lg transition duration-300 text-sm font-semibold"
+                    :class="catalogStore.categoryId === category.id ? 'bg-white text-red-700' : 'text-white hover:bg-red-600'"
+                    @click="catalogStore.setCategoryFilter(category.id)">
+                    {{ category.name }}
+                </span>
+            </div>
+        </div>
     </header>
 </template>
 
 <script setup lang="ts">
 // Lógica y dependencias del header
-import { computed } from 'vue';
+import { computed, onMounted } from 'vue';
 import { Link, usePage } from '@inertiajs/vue3';
 import CartIcon from './public/CartIcon.vue';
 import { logout } from '@/routes';
 import logoUrl from '../assets/Logo.jpg';
+import { useCatalogStore } from '../stores/catalog';
 
 
 
 const page = usePage();
 const user = computed(() => page.props.auth.user);
+
+const catalogStore = useCatalogStore();
+
+onMounted(() => {
+    // Cargar categorías si no están ya en el store
+    if (catalogStore.categories.length === 0) {
+        catalogStore.fetchProducts(); // Asumimos que esto carga las categorías también
+    }
+});
 </script>

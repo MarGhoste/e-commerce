@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Admin Panel | Mi E-commerce</title>
 
-    @vite('resources/css/app.css')
+    
 </head>
 
 <body>
