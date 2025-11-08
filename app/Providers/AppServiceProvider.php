@@ -22,7 +22,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // ... (otros códigos)
+
 
         // ✅ AÑADIR ESTE BLOQUE PARA COMPARTIR EL USUARIO
         Inertia::share([
@@ -37,7 +37,7 @@ class AppServiceProvider extends ServiceProvider
             // Esto es necesario para que Vue sepa si el usuario está logueado
 
             'stripe_key' => Config::get('cashier.key'),
-            // Añade aquí cualquier otro campo que necesites en Vue
+
         ]);
     }
 }

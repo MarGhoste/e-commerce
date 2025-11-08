@@ -46,7 +46,7 @@ class OrderController extends Controller
             'status' => 'required|in:pending,paid,shipped,delivered,cancelled',
         ]);
 
-        // 2. LÓGICA DE NEGOCIO (Actualización)
+        // 2. LÓGICA DE NEGOCIO
         // Ejemplo: Si el estado es 'shipped' (enviado), podrías registrar la fecha.
 
         $order->update($request->only('status'));

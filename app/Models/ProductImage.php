@@ -13,7 +13,7 @@ class ProductImage extends Model
         'product_id',
         'url',
         'is_main',
-        // 'sort_order', // Si lo incluiste en la migración
+
     ];
 
     public function product()

@@ -52,7 +52,7 @@ class CartController extends Controller
                 'id' => $item->product->id,
                 'name' => $item->product->name,
                 'slug' => $item->product->slug,
-                'image_url' => $item->product->image_url, // <-- AÑADIR ESTA LÍNEA para la iamagen
+                'image_url' => $item->product->image_url,
             ] : null;
 
             return [

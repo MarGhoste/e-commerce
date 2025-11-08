@@ -46,7 +46,7 @@ class ProductImageController extends Controller
 
 
 
-        // Guarda el archivo en el disco 'public' (o 's3' si usas AWS)
+        // Guarda el archivo en el disco 'public'
 
         // Y devuelve la ruta al archivo guardado.
 

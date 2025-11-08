@@ -93,11 +93,6 @@ class CheckoutController extends Controller
 
                 //CAMPO DE MÉTODO DE PAGO
                 'payment_method' => 'Stripe',
-
-                // Campo adicional para rastreo de Stripe (si lo quieres en tu tabla orders)
-                // Si no tienes este campo, puedes omitirlo o crear una tabla de transacciones.
-                // Como no está en tu migración original, lo quitaremos por ahora.
-                // 'stripe_charge_id' => $charge->id, 
             ]);
 
             // 3. Mover los Artículos del Carrito a la Orden
