@@ -81,8 +81,8 @@
  import { useCartStore } from '@/stores/cart';
  import { computed, ref, onMounted } from 'vue';
  import { useForm, usePage } from '@inertiajs/vue3';
- import Header from '@/Components/Header.vue'; 
- import Footer from '@/Components/Footer.vue';
+ import Header from '@/components/Header.vue'; 
+ import Footer from '@/components/Footer.vue';
  
  // --- Datos de Componente ---
  const cartStore = useCartStore();
